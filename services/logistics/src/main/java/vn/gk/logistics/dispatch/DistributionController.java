@@ -2,12 +2,9 @@ package vn.gk.logistics.dispatch;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
 import java.time.*;
@@ -18,10 +15,9 @@ import java.util.*;
 @RequestMapping("/api/distribution")
 public class DistributionController {
     private final JdbcTemplate jdbc; private final TransactionTemplate tx; private final ObjectMapper json;
-    private final WorkDayPolicy policy; private final RoutingService routing; private final RestTemplate rest; private final String optimizer;
-    public DistributionController(JdbcTemplate jdbc,TransactionTemplate tx,ObjectMapper json,RoutingService routing,RestTemplateBuilder builder,@Value("${app.optimizer-url}") String optimizer,WorkDayPolicy policy) {
+    private final WorkDayPolicy policy; private final RoutingService routing; private final OptimizerClient optimizer;
+    public DistributionController(JdbcTemplate jdbc,TransactionTemplate tx,ObjectMapper json,RoutingService routing,OptimizerClient optimizer,WorkDayPolicy policy) {
         this.jdbc=jdbc;this.tx=tx;this.json=json;this.routing=routing;this.optimizer=optimizer;this.policy=policy;
-        rest=builder.setConnectTimeout(Duration.ofSeconds(3)).setReadTimeout(Duration.ofSeconds(100)).build();
     }
     private String encode(Object value) { try { return json.writeValueAsString(value); } catch(Exception e) { throw new IllegalArgumentException("Không thể lưu phương án"); } }
     private Map<String,Object> decode(String value) { try { return json.readValue(value,new TypeReference<>(){}); } catch(Exception e) { throw new IllegalStateException(e); } }
@@ -118,7 +114,7 @@ public class DistributionController {
         try {
             if(((List<?>)((Map<?,?>)snapshot.get("request")).get("orders")).isEmpty()){
                 var stats=new LinkedHashMap<String,Object>();stats.put("planning_objective","min_trips_then_cost");stats.put("algorithm","queue_precheck");stats.put("source","not_requested");stats.put("assigned",0);stats.put("remaining_km",0);stats.put("estimated_cost",0);stats.put("requested",0);stats.put("unassigned",new ArrayList<>());result=new LinkedHashMap<>(Map.of("routes",List.of(),"stats",stats));
-            }else result=rest.postForObject(optimizer+"/solve",snapshot.get("request"),Map.class);
+            }else result=optimizer.solve(snapshot.get("request"));
         }
         catch(org.springframework.web.client.RestClientException e) { throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,"Chưa tính được phương án. Kiểm tra Optimizer hoặc cấu hình quãng đường."); }
         if(result==null||!(result.get("routes") instanceof List<?>)) throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,"Phương án trả về không hợp lệ");

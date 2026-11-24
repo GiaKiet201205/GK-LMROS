@@ -131,6 +131,8 @@ GK được tổ chức theo mô hình microservice với **4 dịch vụ backen
 
 Auth, Customer và Logistics sở hữu database riêng; không có khóa ngoại xuyên database. Các dịch vụ trao đổi qua API nội bộ. Đồng bộ tiến độ sang cổng khách hàng có cơ chế thử lại và chống xử lý trùng.
 
+API nghiệp vụ có bảng quyền theo phương thức/đường dẫn và mặc định từ chối khi chưa khai báo. Optimizer chỉ mở trong mạng Docker, yêu cầu token nội bộ khi tính tuyến. Mật khẩu admin phải được cấu hình riêng, không có giá trị mặc định trong backend. Lỗi ngoài dự kiến trả JSON an toàn kèm mã tra cứu để đối chiếu log.
+
 Redis hỗ trợ lưu vị trí gần nhất; Redpanda cung cấp hạ tầng tương thích Kafka để phát sự kiện. Hệ thống kết hợp API, worker đồng bộ và sự kiện, không chỉ giao tiếp qua Kafka. Logistics vẫn tập trung các nghiệp vụ vận tải và tài chính trong cùng dịch vụ để giữ các giao dịch liên quan nhất quán.
 
 ## 7. Ngôn ngữ, công nghệ và công cụ

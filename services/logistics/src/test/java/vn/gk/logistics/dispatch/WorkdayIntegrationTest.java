@@ -18,7 +18,7 @@ import java.time.*;
 import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-/** Opt-in only: all test business rows are cleared in a dedicated local *_test database. */
+/** Opt-in only: dedicated local *_test DB. Test Optimizer needs INTERNAL_SERVICE_TOKEN=workday-test-token. */
 @SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.NONE,properties={"ROUTING_ENABLED=false","RESERVATION_RECONCILE_ENABLED=false","FINANCE_ACCRUAL_ENABLED=false","app.internal-token=workday-test-token","debug=false","logging.level.root=WARN"})
 @EnabledIfEnvironmentVariable(named="GK_WORKDAY_TEST_DB",matches="jdbc:postgresql://(?:127\\.0\\.0\\.1|localhost):[0-9]+/[a-z_]+_test")
 class WorkdayIntegrationTest {
@@ -50,6 +50,7 @@ class WorkdayIntegrationTest {
  @Autowired org.springframework.transaction.support.TransactionTemplate tx;
  @Autowired com.fasterxml.jackson.databind.ObjectMapper json;
  @Autowired org.springframework.boot.web.client.RestTemplateBuilder rest;
+ @Autowired OptimizerClient optimizer;
  static final LocalDate DAY=LocalDate.of(2026,11,22);
  @BeforeEach void fixture() {
   clock.at("2026-11-22T09:00:00+07:00");
@@ -120,7 +121,7 @@ class WorkdayIntegrationTest {
   jdbc.update("UPDATE driver_work_days SET working=false WHERE driver_id=2 AND work_date=?",DAY);
   jdbc.update("UPDATE drivers SET vehicle_id=2 WHERE id=2");
   jdbc.update("UPDATE orders SET stage='awaiting_pickup',status='new',in_warehouse=false,pickup_lat=lat,pickup_lng=lng,pickup_from=?,pickup_to=? WHERE id=1",DAY.plusDays(1).atTime(8,0),DAY.plusDays(1).atTime(18,0));
-  var worker=new RoutingService(jdbc,tx,json,rest,"http://127.0.0.1:18083",true,policy);
+  var worker=new RoutingService(jdbc,tx,json,optimizer,true,policy);
   jdbc.update("UPDATE routing_state SET dirty=true,retry_after=NULL WHERE id=1");worker.tick();
   assertEquals(0,jdbc.queryForObject("SELECT count(*) FROM trips",Integer.class));
   assertEquals("awaiting_pickup",stage(1));
@@ -342,7 +343,7 @@ class WorkdayIntegrationTest {
   var proposal=distribution.preview(new DistributionController.Request(DAY.plusDays(1),1,45,List.of(new DistributionController.Assignment(1,1)),"pickup"));
   distribution.confirm(((Number)proposal.get("id")).longValue());int t=trip(1);driver.start(t);int first=stop(t,"pickup");driver.depart(first);
   jdbc.update("UPDATE orders SET stage='awaiting_pickup',in_warehouse=false WHERE id=2");
-  var worker=new RoutingService(jdbc,tx,json,rest,"http://127.0.0.1:18083",true,policy);jdbc.update("UPDATE routing_state SET dirty=true,retry_after=NULL WHERE id=1");worker.tick();
+  var worker=new RoutingService(jdbc,tx,json,optimizer,true,policy);jdbc.update("UPDATE routing_state SET dirty=true,retry_after=NULL WHERE id=1");worker.tick();
   assertNull(jdbc.queryForObject("SELECT last_error FROM routing_state WHERE id=1",String.class));
   assertEquals(1,jdbc.queryForObject("SELECT count(*) FROM trips",Integer.class));
   assertEquals(first,routing.stops(t).get(0).get("stop_id"));assertEquals("en_route",routing.stops(t).get(0).get("state"));

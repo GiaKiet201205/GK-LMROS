@@ -3,13 +3,11 @@ package vn.gk.logistics.dispatch;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.client.RestTemplate;
 import java.time.*;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import java.util.*;
@@ -21,17 +19,14 @@ public class RoutingService {
     private final JdbcTemplate jdbc;
     private final TransactionTemplate tx;
     private final ObjectMapper json;
-    private final RestTemplate rest;
-    private final String optimizerUrl;
+    private final OptimizerClient optimizer;
     private final boolean enabled;
     private final WorkDayPolicy policy;
     private LocalDate lastDispatchDate;
-    public RoutingService(JdbcTemplate jdbc, TransactionTemplate tx, ObjectMapper json, RestTemplateBuilder builder,
-                          @Value("${app.optimizer-url}") String optimizerUrl,
+    public RoutingService(JdbcTemplate jdbc, TransactionTemplate tx, ObjectMapper json, OptimizerClient optimizer,
                           @Value("${ROUTING_ENABLED:true}") boolean enabled,WorkDayPolicy policy) {
-        this.jdbc=jdbc; this.tx=tx; this.json=json; this.optimizerUrl=optimizerUrl;
+        this.jdbc=jdbc; this.tx=tx; this.json=json; this.optimizer=optimizer;
         this.enabled=enabled;this.policy=policy;
-        this.rest=builder.setConnectTimeout(Duration.ofSeconds(3)).setReadTimeout(Duration.ofSeconds(100)).build();
     }
     public void changed() {
         // Must be called at the start of the caller's business transaction.
@@ -60,7 +55,7 @@ public class RoutingService {
             if (jdbc.update("UPDATE routing_state SET lease_owner=?,lease_until=now()+interval '120 seconds' WHERE id=1 AND dirty AND (retry_after IS NULL OR retry_after<=now()) AND (lease_until IS NULL OR lease_until<now())",owner)==0) return;
             Map<String,Object> snapshot=tx.execute(s -> snapshot(owner));
             if (snapshot==null) return;
-            @SuppressWarnings("unchecked") Map<String,Object> result=rest.postForObject(optimizerUrl+"/solve",snapshot,Map.class);
+            @SuppressWarnings("unchecked") Map<String,Object> result=optimizer.solve(snapshot);
             if (result==null || !result.containsKey("routes")) throw new IllegalArgumentException("Invalid optimizer response");
             tx.executeWithoutResult(s -> apply(owner,snapshot,result));
         } catch(Exception e) {
@@ -139,6 +134,7 @@ public class RoutingService {
         Map<String,Object> out=new LinkedHashMap<>();
         out.put("revision",state.get("revision"));out.put("work_date",workDate.toString());out.put("warehouses",warehouses);out.put("vehicles",vehicles);
         out.put("routes",routes);out.put("orders",orders);out.put("now_min",now);
+        out.put("fixed_trip_cost",jdbc.queryForObject("SELECT fixed_trip_cost_vnd FROM pricing_settings WHERE id=1",Long.class));
         return out;
     }
     public List<Map<String,Object>> stops(int tripId) { return stopsForTrips(List.of(tripId)); }

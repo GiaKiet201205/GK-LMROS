@@ -23,4 +23,17 @@ public class ApiErrors {
     public ResponseEntity<?> state(ResponseStatusException error) {
         return ResponseEntity.status(error.getStatusCode()).body(Map.of("message",error.getReason()==null?"Không thể thực hiện thao tác":error.getReason()));
     }
+    @ExceptionHandler({org.springframework.web.servlet.resource.NoResourceFoundException.class,org.springframework.web.servlet.NoHandlerFoundException.class})
+    public ResponseEntity<?> notFound() {return ResponseEntity.status(404).body(Map.of("message","Không tìm thấy chức năng"));}
+    @ExceptionHandler({org.springframework.web.HttpRequestMethodNotSupportedException.class,org.springframework.web.HttpMediaTypeNotSupportedException.class,org.springframework.web.HttpMediaTypeNotAcceptableException.class})
+    public ResponseEntity<?> protocol(Exception error) {
+        var status=((org.springframework.web.ErrorResponse)error).getStatusCode();
+        return ResponseEntity.status(status).body(Map.of("message","Phương thức hoặc định dạng yêu cầu không được hỗ trợ"));
+    }
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> unexpected(Exception error,jakarta.servlet.http.HttpServletRequest request) {
+        String requestId=java.util.UUID.randomUUID().toString();
+        org.slf4j.LoggerFactory.getLogger(getClass()).error("Unhandled request {} {} [{}]",request.getMethod(),request.getRequestURI(),requestId,error);
+        return ResponseEntity.status(500).body(Map.of("message","Có lỗi hệ thống. Vui lòng thử lại hoặc liên hệ hỗ trợ.","requestId",requestId));
+    }
 }

@@ -71,8 +71,9 @@ Mở `.env` bằng trình soạn thảo. Giữ các tên database/user/volume m�
 | `AUTH_DB_NAME`, `AUTH_DB_USER`, `AUTH_DB_PASSWORD` | DB tài khoản admin/tài xế | Giữ tên/user mặc định, đặt mật khẩu riêng |
 | `CUSTOMER_DB_NAME`, `CUSTOMER_DB_USER`, `CUSTOMER_DB_PASSWORD` | DB khách hàng | Giữ tên/user mặc định, đặt mật khẩu riêng |
 | `DB_VOLUME_NAME`, `AUTH_DB_VOLUME_NAME`, `CUSTOMER_DB_VOLUME_NAME` | Vùng lưu dữ liệu ba DB | Giữ tên mặc định để các lần chạy dùng lại dữ liệu |
-| `ADMIN_PASSWORD` | Mật khẩu tạo admin lần đầu | Đặt mật khẩu bạn sẽ dùng để đăng nhập |
-| `INTERNAL_SERVICE_TOKEN` | Token trao đổi giữa các backend | Thay chuỗi mẫu bằng giá trị ngẫu nhiên riêng |
+| `ADMIN_PASSWORD` | Mật khẩu tạo admin lần đầu | Bắt buộc tự đặt; thiếu/rỗng sẽ không khởi động |
+| `INTERNAL_SERVICE_TOKEN` | Token trao đổi giữa các backend, bao gồm Optimizer | Thay chuỗi mẫu bằng giá trị ngẫu nhiên riêng |
+| `OPTIMIZER_FIXED_TRIP_COST` | Phí chuyến mặc định của Optimizer | Mặc định `35000`; phí admin đã lưu và gửi trong yêu cầu được ưu tiên |
 | `ROUTING_ENABLED` | Tự động xét cập nhật tuyến | Mặc định `true` |
 | `ROUTING_PROVIDER` | Nguồn khoảng cách cho tối ưu | `estimate` khi chưa có key Google, `google` khi đã cấu hình |
 
@@ -133,7 +134,7 @@ Lần đầu tạo volume DB nghiệp vụ, PostgreSQL nạp schema và danh m�
 
 Tài khoản trên bộ dữ liệu mới:
 
-- **Admin:** tên đăng nhập `admin`, mật khẩu là `ADMIN_PASSWORD` đã đặt ở mục 3. Nếu giữ nguyên file mẫu, giá trị ban đầu là `201205`.
+- **Admin:** tên đăng nhập `admin`, mật khẩu là `ADMIN_PASSWORD` đã đặt ở mục 3. Hệ thống không còn mật khẩu mặc định; phải điền `.env` trước khi chạy.
 - **Tài xế:** tên đăng nhập là mã tài xế, ví dụ `TX-001`; mật khẩu khởi tạo là số điện thoại tương ứng trong hồ sơ, chỉ gồm chữ số. Xem hồ sơ từ cổng admin hoặc Auth DB; không đoán mật khẩu từ mã tài xế.
 - **Khách hàng:** tự đăng ký ở cổng khách hoặc đăng nhập Google sau khi cấu hình mục 7.
 
@@ -374,7 +375,7 @@ docker compose logs --tail=100 logistics auth customer optimizer gateway
 | Tài xế/xe không được phân chuyến | Kiểm tra lịch, trạng thái nguồn lực, kho, giờ hẹn, tải trọng và số đơn; không chỉ kiểm tra container |
 | Không có đơn hoặc số liệu khác máy cũ | Mã nguồn không chứa volume máy cũ; kiểm tra đã khôi phục đúng cả ba DB và đúng tên volume chưa |
 
-Các cổng host đang dùng gồm `3000`, `3001`, `3002`, `8080`, `8000`, `6379`, `9092` và DB nghiệp vụ mặc định `15433`. Studio dùng thêm `5555`, `5556`, `5557` khi được bật.
+Các cổng host đang dùng gồm `3000`, `3001`, `3002`, `8080`, `6379`, `9092` và DB nghiệp vụ mặc định `15433`. Studio dùng thêm `5555`, `5556`, `5557` khi được bật. Optimizer không công bố cổng 8000 ra host; Logistics gọi `http://optimizer:8000` trong mạng Docker và gửi `X-Internal-Token`. Nếu chạy Optimizer trực tiếp để phát triển, phải cấu hình `INTERNAL_SERVICE_TOKEN` và gửi header này khi gọi `/solve`.
 
 ## 13. Truy cập từ điện thoại và chia sẻ demo
 

@@ -17,14 +17,17 @@ import java.util.*;
 public class AuthService {
     private final JdbcTemplate jdbc;
     private final SecureRandom random = new SecureRandom();
-    @Value("${ADMIN_PASSWORD:201205}") private String adminPassword;
+    private final String adminPassword;
     private final RestTemplate rest;
     private final String logisticsUrl;
     private final String internalToken;
     public AuthService(JdbcTemplate jdbc, RestTemplate rest,
                        @Value("${app.logistics-url}") String logisticsUrl,
-                       @Value("${app.internal-token}") String internalToken) {
+                       @Value("${app.internal-token}") String internalToken,
+                       @Value("${ADMIN_PASSWORD}") String adminPassword) {
         if (internalToken.isBlank()) throw new IllegalArgumentException("INTERNAL_SERVICE_TOKEN must not be blank");
+        if (adminPassword == null || adminPassword.isBlank() || adminPassword.startsWith("replace-with-")) throw new IllegalArgumentException("ADMIN_PASSWORD must be explicitly configured");
+        this.adminPassword = adminPassword;
         this.jdbc = jdbc; this.rest = rest; this.logisticsUrl = logisticsUrl; this.internalToken = internalToken;
     }
     private HttpEntity<Void> internalRequest() {

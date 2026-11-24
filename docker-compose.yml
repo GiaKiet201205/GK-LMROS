@@ -38,10 +38,12 @@ services:
   optimizer:
     build: ./services/optimizer
     environment:
+      INTERNAL_SERVICE_TOKEN: ${INTERNAL_SERVICE_TOKEN:?Set INTERNAL_SERVICE_TOKEN in .env}
+      OPTIMIZER_FIXED_TRIP_COST: ${OPTIMIZER_FIXED_TRIP_COST:-35000}
       ROUTING_PROVIDER: ${ROUTING_PROVIDER:-estimate}
       GOOGLE_ROUTES_API_KEY: ${GOOGLE_ROUTES_API_KEY:-}
       GOOGLE_MATRIX_MAX_POINTS: ${GOOGLE_MATRIX_MAX_POINTS:-100}
-    ports: ["8000:8000"]
+    expose: ["8000"]
 
   # Logistics owns the existing operational database and keeps its persistent volume.
   logistics:
@@ -96,7 +98,7 @@ services:
       AUTH_DB_PASSWORD: ${AUTH_DB_PASSWORD:-gk_auth}
       LOGISTICS_URL: http://logistics:8080
       INTERNAL_SERVICE_TOKEN: ${INTERNAL_SERVICE_TOKEN:?Set INTERNAL_SERVICE_TOKEN in .env}
-      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-201205}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:?Set a non-empty ADMIN_PASSWORD in .env}
       TZ: Asia/Ho_Chi_Minh
     depends_on:
       auth-db: { condition: service_healthy }

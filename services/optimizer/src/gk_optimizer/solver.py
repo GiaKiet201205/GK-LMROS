@@ -4,6 +4,8 @@ Pickup trips and delivery trips are separate. Pickups are unloaded only at
 the final warehouse checkpoint; they become deliveries in a later trip.
 This is a constrained heuristic, not a proof of the global optimum.
 """
+from gk_optimizer.settings import default_fixed_trip_cost
+
 import copy
 import math
 import os
@@ -201,7 +203,7 @@ def pack_single_batches(routes, ordered, travel, req, deadline, maximum):
 
 def improve_fleet(routes, travel, req, deadline):
     """Consolidate fresh trips first, then reduce cost without increasing trip count."""
-    fixed = float(req.get('fixed_trip_cost', 35000))
+    fixed = float(req.get('fixed_trip_cost', default_fixed_trip_cost()))
     maximum = min(45, int(req.get('max_orders', 45)))
     def cost(route, nodes, result):
         return result[0] / 1000 * float(route['cost_per_km']) + (fixed if any(n['kind'] != 'warehouse' for n in nodes) else 0)
@@ -365,7 +367,7 @@ def solve(req):
                     continue
                 incremental = (result[0] - baseline[0]) / 1000 * float(route['cost_per_km'])
                 if req.get('group_deliveries') and customer_count == 0:
-                    incremental += float(req.get('fixed_trip_cost', 35000))
+                    incremental += float(req.get('fixed_trip_cost', default_fixed_trip_cost()))
                 score = ((int(customer_count == 0), incremental, result[1], result[0], route['vehicle_id'], position) if req.get('group_deliveries') else (incremental, result[0], route['vehicle_id'], position))
                 if best is None or score < best[0]:
                     best = (score, index, candidate)
@@ -397,7 +399,7 @@ def solve(req):
         customers = [n for n in route['nodes'] if n['kind'] != 'warehouse']
         route['load_kg'] = round(sum(float(n.get('weight_kg', 0)) for n in customers), 3)
         route['load_m3'] = round(sum(float(n.get('volume_m3', 0)) for n in customers), 4)
-        route['operating_cost'] = round(result[0] / 1000 * float(route['cost_per_km']) + (float(req.get('fixed_trip_cost', 35000)) if req.get('group_deliveries') else 0))
+        route['operating_cost'] = round(result[0] / 1000 * float(route['cost_per_km']) + (float(req.get('fixed_trip_cost', default_fixed_trip_cost())) if req.get('group_deliveries') else 0))
         fare_customers = [n for n in customers if n['kind'] == 'delivery']
         route['confirmed_revenue'] = sum(int(n['shipping_fee_vnd']) for n in fare_customers if n.get('shipping_fee_vnd') is not None and n.get('shipping_price_status') == 'confirmed')
         route['estimated_revenue'] = sum(int(n['shipping_fee_vnd']) for n in fare_customers if n.get('shipping_fee_vnd') is not None)
@@ -411,7 +413,7 @@ def solve(req):
     return {'routes': output, 'stats': {'algorithm': 'batch-first-insertion-2opt-relocate-v2', 'planning_objective': 'min_trips_then_cost' if req.get('group_deliveries') else 'incremental_cost', 'single_batch_orders': len(packed), 'source': travel.provider,
             'assigned': len(assigned), 'unassigned': unassigned, 'requested': len(req['orders']),
             'remaining_km': round(sum(r['distance_km'] for r in output), 3), 'blocked_routes': [r['id'] for r in blocked],
-            'estimated_cost': round(sum(r['distance_km'] * float(r['cost_per_km']) + (float(req.get('fixed_trip_cost', 35000)) if req.get('group_deliveries') else 0) for r in output), 0),
+            'estimated_cost': round(sum(r['distance_km'] * float(r['cost_per_km']) + (float(req.get('fixed_trip_cost', default_fixed_trip_cost())) if req.get('group_deliveries') else 0) for r in output), 0),
             'max_orders': max_orders,
             'confirmed_revenue': sum(r['confirmed_revenue'] for r in output),
             'estimated_revenue': sum(r['estimated_revenue'] for r in output),
