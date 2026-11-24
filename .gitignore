@@ -1,0 +1,26 @@
+# Local credentials and migration recovery state
+**/.env
+**/.env.*
+!**/.env.example
+
+# Installed dependencies, generated output and local caches
+**/node_modules/
+**/target/
+**/dist/
+**/dist-*/
+**/__pycache__/
+**/*.py[cod]
+**/.venv/
+**/venv/
+**/.pytest_cache/
+**/.mypy_cache/
+**/.ruff_cache/
+**/coverage/
+**/*.log
+.DS_Store
+Thumbs.db
+
+# Private database backups made by local operations scripts
+/var/
+
+.local-backups/

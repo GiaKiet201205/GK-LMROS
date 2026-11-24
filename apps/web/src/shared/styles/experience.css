@@ -1,0 +1,236 @@
+/* Shared reading rhythm; portal-specific layouts remain separate. */
+:root {
+  --font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans", Arial, sans-serif;
+  --space-xs: 8px;
+  --space-sm: 12px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+}
+body { line-height: 1.55; -webkit-font-smoothing: antialiased; }
+button, input, select, textarea { font-family: var(--font); }
+:is(button, a, input, select, textarea) { -webkit-tap-highlight-color: transparent; }
+:is(button, a) > svg { flex-shrink: 0; }
+
+/* The dispatcher keeps a persistent rail on desktop and a real drawer below. */
+.dispatcher-shell { grid-template-columns: 256px minmax(0, 1fr); font-size: 15px; }
+.dispatcher-shell > .side {
+  height: 100dvh; position: sticky; top: 0; padding: 20px 16px 16px;
+  overflow: hidden; gap: 16px; z-index: 45;
+}
+.side-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-shrink: 0; }
+.dispatcher-shell .side .brand { padding: 0 6px; gap: 10px; }
+.dispatcher-shell .side .brand img { width: 38px; height: 38px; }
+.dispatcher-shell .side .brand strong { font-size: 26px; line-height: 1.15; }
+.dispatcher-shell .side .brand small { font-size: 11px; line-height: 1.4; margin-top: 3px; }
+.side-brand-link { color: #fff; min-width: 0; }
+.dispatcher-shell .side-create {
+  min-height: 44px; border: 1px solid #5a9687; background: #216557; color: #fff;
+  display: flex; align-items: center; justify-content: center; gap: 9px; border-radius: 10px;
+  font-size: 14px; font-weight: 600; flex-shrink: 0;
+}
+.dispatcher-shell .side-create:hover, .dispatcher-shell .side-create.current { background: #2b7a69; border-color: #9bd6c5; }
+.dispatcher-shell .side .nav { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; margin: 0 -3px; padding: 0 3px 6px; scrollbar-width: thin; scrollbar-color: #426960 transparent; }
+.side-group { display: flex; flex-direction: column; gap: 3px; }
+.side-group-title { padding: 0 10px 5px; font-size: 10px; line-height: 1.5; font-weight: 600; letter-spacing: .09em; text-transform: uppercase; color: #9bb9b0; }
+.dispatcher-shell .nav a { font-size: 14px; line-height: 1.4; min-height: 40px; padding: 9px 10px; gap: 10px; flex-shrink: 0; }
+.dispatcher-shell .nav a span { min-width: 0; }
+.dispatcher-shell .nav a.active { background: #234d45; box-shadow: inset 3px 0 #9cdec8; }
+.dispatcher-shell .side-foot { flex-shrink: 0; margin-top: 0; padding: 12px 6px 0; font-size: 12px; }
+.side-counts { display: flex; gap: 20px; align-items: center; }
+.side-counts span { display: inline-flex; align-items: center; gap: 7px; }
+.side-close, .side-menu, .side-mobile-account, .side-backdrop { display: none; }
+.dispatcher-skip { position: fixed; z-index: 1500; left: 12px; top: -90px; padding: 12px 18px; border-radius: 8px; background: var(--card); color: var(--ink); border: 1px solid var(--blue); }
+.dispatcher-skip:focus { top: 12px; }
+.dispatcher-shell > .main:focus { outline: none; }
+.dispatcher-shell .top { min-height: 72px; padding: 12px 24px; gap: 18px; position: sticky; top: 0; z-index: 30; }
+.dispatcher-shell .top .chip { min-width: 0; }
+.dispatcher-shell .top select { max-width: 240px; text-overflow: ellipsis; }
+
+/* Consistent business typography and a single spacing owner per page. */
+.dispatcher-shell .page { padding: 24px 28px 36px; gap: 20px; }
+.dispatcher-shell .page > :is(.card, .toolbar, .orders-filters, .orders-selection, .orders-pagination) { margin-block: 0; }
+.dispatcher-shell .page .page-head { align-items: center; min-height: 44px; }
+.dispatcher-shell .page .page-head h1 { font-size: 28px; line-height: 1.3; font-weight: 700; letter-spacing: -.025em; }
+.dispatcher-shell .page h2 { font-size: 18px; line-height: 1.4; font-weight: 600; letter-spacing: -.015em; }
+.dispatcher-shell .page h3 { font-size: 16px; line-height: 1.45; font-weight: 600; letter-spacing: -.01em; }
+.dispatcher-shell .card { padding: 20px; border-radius: 14px; }
+.dispatcher-shell .card > :is(h2, h3) + :is(p, .toolbar, .table-scroll, .form, form, dl) { margin-top: 14px; }
+.dispatcher-shell .page :is(p, small, .block) { line-height: 1.6; }
+.dispatcher-shell .page small { font-size: 12px; }
+.dispatcher-shell .page :is(input:not([type=checkbox]):not([type=radio]), select, textarea) { font-family: var(--font); font-size: 14px; }
+.dispatcher-shell .form { width: 100%; max-width: 960px; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.dispatcher-shell .form label, .dispatcher-shell .field label { line-height: 1.5; }
+.dispatcher-shell .btn { font-family: var(--font); font-size: 14px; font-weight: 600; min-height: 44px; }
+.dispatcher-shell .tag { line-height: 1.45; font-size: 12px; }
+.dispatcher-shell .fleet-dialog { padding: 24px; }
+.dispatcher-shell .fleet-dialog h2 { font-size: 20px; }
+.dispatcher-shell .fleet-dialog h2 svg { vertical-align: -3px; }
+.dispatcher-shell .callout { line-height: 1.6; }
+.dispatcher-shell .maintenance-workspace > .vehicle-costs { margin-top: 0; }
+.dispatcher-shell .vehicle-cost-item > .row { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; align-items: center; }
+
+/* Keep table controls attached to their data, not floating in empty space. */
+.table-scroll { min-width: 0; }
+.table-scroll.has-overflow { background: var(--card); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.table-scroll.has-overflow > .table-wrap { border: 0; border-radius: 0; box-shadow: none; }
+.table-scroll-tools { margin: 0; min-height: 38px; padding: 5px 10px 5px 14px; background: var(--surface-soft, #f5f8f7); border-bottom: 1px solid var(--line); font-size: 11px; }
+.table-scroll-tools > span { gap: 7px; }
+.table-scroll-tools .table-scroll-arrow { width: 30px; height: 28px; min-height: 28px; }
+.dispatcher-shell .table-wrap :is(th, td) { padding: 12px 14px; line-height: 1.5; }
+.dispatcher-shell .table-wrap th { font-size: 12px; font-weight: 600; }
+.dispatcher-shell .table-wrap td { font-size: 14px; }
+.orders-table-panel { min-width: 0; border: 1px solid var(--line); border-radius: 14px; background: var(--card); overflow: hidden; box-shadow: var(--shadow); }
+.dispatcher-shell .orders-table-panel .orders-selection { margin: 0; padding: 12px 16px; min-height: 68px; border-bottom: 1px solid var(--line); }
+.orders-table-panel .orders-selection > span { margin-right: auto; font-size: 13px; }
+.orders-table-panel .table-scroll { border: 0; border-radius: 0; }
+.orders-table-panel .table-wrap { border: 0; border-radius: 0; box-shadow: none; }
+.orders-table-panel .table-wrap :is(th, td):first-child { width: 44px; min-width: 44px; max-width: 44px; padding-inline: 12px; position: sticky; left: 0; z-index: 2; background: var(--card); }
+.orders-table-panel .table-wrap :is(th, td):nth-child(2) { min-width: 170px; position: sticky; left: 44px; z-index: 2; background: var(--card); box-shadow: 1px 0 var(--line); }
+.orders-table-panel .table-wrap th:is(:first-child, :nth-child(2)) { z-index: 3; background: var(--surface-soft, #f5f8f7); }
+.dispatcher-shell .orders-filter-details { margin-top: 12px; }
+.dispatcher-shell .orders-pagination { justify-content: flex-end; }
+.dispatcher-shell .orders-pagination span { font-size: 13px; color: var(--ink-2); }
+
+/* Financial headings, figures and review cards share the same hierarchy. */
+.finance-page > .tag { align-self: flex-start; }
+.finance-insights { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; align-items: stretch; }
+.finance-insights > :only-child { grid-column: 1 / -1; }
+.finance-insights .card { margin: 0; }
+.finance-page .finance-section-heading { margin-bottom: 16px; }
+.finance-page .finance-section-heading > h2 { margin: 0; }
+.finance-page .finance-controls .form { max-width: none; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.finance-page .finance-editor .form { max-width: none; }
+.finance-page .finance-coverage .toolbar { margin-top: 14px; gap: 8px; }
+.finance-page .finance-coverage .btn { white-space: normal; text-align: left; justify-content: flex-start; font-size: 13px; }
+.finance-page .finance-comparison > p { color: var(--ink-3); font-size: 13px; }
+.finance-change-metrics { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 16px; }
+.finance-change-metrics > div { display: grid; gap: 5px; min-width: 0; }
+.finance-change-metrics span { font-size: 13px; color: var(--ink-2); }
+.finance-change-metrics strong { font-size: clamp(18px, 1.65vw, 23px); line-height: 1.35; font-weight: 700; letter-spacing: -.02em; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+.finance-page .kpi b { font-variant-numeric: tabular-nums; line-height: 1.35; }
+
+/* Driver: readable address and actions, less nested padding on small screens. */
+.driver-app { font-family: var(--font); line-height: 1.55; }
+.driver-app h1 { line-height: 1.35; letter-spacing: -.02em; }
+.driver-app :is(.pcard, .card) h2 { font-size: 18px; font-weight: 600; line-height: 1.45; }
+.driver-app :is(.pcard, .card) h3 { font-size: 16px; font-weight: 600; }
+.driver-app .driver-trip-summary > :is(p, small) { margin-top: 8px; }
+.driver-app .driver-next-stop > h2 { margin: 10px 0 8px; font-size: 21px; font-weight: 700; }
+.driver-app .driver-next-stop > p { margin-top: 6px; }
+.driver-app .driver-payment { padding: 14px; background: var(--blue-50); margin-block: 16px; }
+.driver-app .driver-payment > .row { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.driver-app .driver-payment h3 { font-size: 14px; }
+.driver-app .driver-payment > p { margin-block: 10px; }
+.driver-app .payment-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.driver-app .payment-actions .p-btn { font-size: 14px; padding-inline: 8px; }
+.driver-app .driver-route-history > h2 { margin-bottom: 18px; }
+.driver-app .weekly-schedule > h2 { margin-bottom: 16px; }
+.driver-app .tabbar { font-family: var(--font); }
+
+/* Customer: same type family, spacious forms without oversized sections. */
+.gk-customer { font-family: var(--font); }
+.gk-customer :is(h1, h2, h3) { line-height: 1.35; }
+.gk-customer .c-page-heading h1 { font-size: clamp(28px, 2.7vw, 36px); letter-spacing: -.025em; }
+.gk-customer .c-panel { padding: 24px; border-radius: 14px; }
+.gk-customer .c-panel h2 { font-size: 20px; font-weight: 600; letter-spacing: -.02em; }
+.gk-customer .c-panel h3 { font-size: 17px; font-weight: 600; }
+.gk-customer .c-panel-title { margin-bottom: 20px; gap: 12px; }
+.gk-customer .c-panel-title p { margin-top: 6px; line-height: 1.6; }
+.gk-customer .c-page-heading { margin-bottom: 24px; }
+.gk-customer .c-page { padding-block: 32px 48px; }
+.gk-customer .c-hero-lead { line-height: 1.75; }
+.gk-customer :is(.c-hero h1 em, .c-auth-intro h1 em) { font-family: var(--font); font-weight: 600; }
+.gk-customer .c-btn { min-height: 48px; border-radius: 10px; font-weight: 600; }
+.gk-customer .c-field :is(input, select, textarea) { border-radius: 10px; }
+.gk-customer .c-panel-heading { gap: 12px; flex-wrap: wrap; }
+.gk-customer .c-form-grid { gap: 16px; }
+.gk-customer .c-notification { line-height: 1.6; }
+
+@media (min-width: 1100px) and (max-width: 1250px) {
+  .dispatcher-shell { grid-template-columns: 236px minmax(0, 1fr); }
+  .dispatcher-shell > .side { padding-inline: 12px; }
+  .dispatcher-shell .page { padding-inline: 22px; }
+  .finance-page .grid4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 1099px) {
+  .dispatcher-shell { grid-template-columns: minmax(0, 1fr); }
+  .dispatcher-shell > .side { position: fixed; inset: 0 auto 0 0; width: min(288px, calc(100vw - 44px)); height: 100dvh; transform: translateX(-105%); visibility: hidden; transition: transform .18s ease, visibility .18s; z-index: 80; }
+  .dispatcher-shell > .side.is-open { transform: translateX(0); visibility: visible; }
+  .side-menu, .side-close { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; flex-shrink: 0; border: 1px solid var(--line); border-radius: 10px; background: var(--card); color: var(--ink); padding: 0; }
+  .side-close { color: #dcece5; background: #ffffff0b; border-color: #47665b; width: 36px; height: 36px; }
+  .side-backdrop { display: block; position: fixed; inset: 0; z-index: 75; background: #081d19a6; backdrop-filter: blur(2px); border: 0; cursor: default; }
+  .side-mobile-account { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 12px; padding-top: 10px; border-top: 1px solid #2b4c47; }
+  .side-mobile-account button { min-width: 40px; min-height: 40px; color: #dcece5; border: 1px solid #47665b; background: transparent; border-radius: 8px; display: grid; place-items: center; }
+  .dispatcher-shell .side .nav { gap: 16px; }
+  .dispatcher-shell .nav a { min-height: 44px; }
+  .dispatcher-shell .top { padding-inline: 20px; gap: 14px; }
+}
+@media (max-width: 800px) {
+  .dispatcher-shell .page { padding: 20px 20px 32px; gap: 16px; }
+  .dispatcher-shell .page .page-head h1 { font-size: 25px; }
+  .dispatcher-shell .form, .finance-page .finance-controls .form { grid-template-columns: 1fr; }
+  .finance-insights { grid-template-columns: 1fr; gap: 16px; }
+  .dispatcher-shell .page :is(input:not([type=checkbox]):not([type=radio]), select, textarea) { font-size: 16px; }
+  .gk-customer .c-panel { padding: 22px 20px; }
+}
+@media (max-width: 600px) {
+  .dispatcher-shell .top { padding: 10px 14px; gap: 10px; min-height: 66px; flex-wrap: nowrap; }
+  .dispatcher-shell .top-date, .dispatcher-shell .top .user, .dispatcher-shell .dispatcher-logout { display: none; }
+  .dispatcher-shell .top select { max-width: min(200px, 52vw); font-size: 14px; }
+  .dispatcher-shell .top .grow { min-width: 0; }
+  .dispatcher-shell .page { padding: 20px 14px 28px; }
+  .dispatcher-shell .page-head { flex-wrap: wrap; gap: 12px; }
+  .dispatcher-shell .card { padding: 18px 16px; }
+  .dispatcher-shell .page .page-head h1 { font-size: 24px; }
+  .dispatcher-shell .fleet-dialog { padding: 20px; }
+  .dispatcher-shell .orders-table-panel .orders-selection { padding: 12px; gap: 8px; }
+  .orders-table-panel .orders-selection > span { flex-basis: 100%; }
+  .finance-change-metrics strong { font-size: 20px; }
+  .driver-app .pcard, .driver-app .card { padding: 16px; }
+  .driver-app .driver-brand { padding-block: 12px; }
+  .driver-app .driver-brand .brand img { width: 32px; height: 32px; }
+  .driver-app .driver-brand .brand strong { font-size: 24px; }
+  .driver-app .driver-brand .brand small { display: none; }
+  .gk-customer .c-page { padding-block: 22px 32px; }
+  .gk-customer .c-panel { padding: 20px 16px; }
+  .gk-customer .c-page-heading { margin-bottom: 20px; }
+  .gk-customer .c-hero h1 { font-size: 34px; line-height: 1.25; }
+  .gk-customer .c-hero-lead { font-size: 16px; line-height: 1.7; }
+  .gk-customer .c-panel-heading > span { font-size: 12px; }
+}
+@media (max-width: 359px) {
+  .driver-app .payment-actions { grid-template-columns: 1fr; }
+  .dispatcher-shell .top select { max-width: 48vw; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dispatcher-shell *, .gk-customer *, .driver-app * { scroll-behavior: auto !important; transition: none !important; }
+}
+
+/* Group related order details instead of spreading them across twelve columns. */
+.orders-status-cell { display: grid; justify-items: start; gap: 5px; min-width: 144px; }
+.orders-status-cell small { max-width: 180px; white-space: normal; }
+.orders-customer-name { font-weight: 600; }
+.orders-address-cell { min-width: 240px; max-width: 310px; white-space: normal; display: grid; gap: 8px; }
+.orders-address-cell p { display: grid; grid-template-columns: 32px minmax(0, 1fr); gap: 8px; font-size: 13px; line-height: 1.5; margin: 0; }
+.orders-address-cell p > span { color: var(--ink-3); font-size: 11px; font-weight: 600; padding-top: 2px; }
+.orders-table-panel tr:hover td:is(:first-child, :nth-child(2)) { background: var(--surface-hover, #edf3ef); }
+@media (max-width: 600px) {
+  .orders-table-panel .table-wrap :is(th, td):nth-child(2) { position: static; box-shadow: none; }
+  .orders-address-cell { min-width: 220px; }
+}
+
+/* Compact, consistently aligned actions stay beside the visible data. */
+.dispatcher-shell .table-wrap .table-actions-cell{position:sticky;right:0;z-index:2;width:1%;min-width:156px;max-width:190px;padding:10px 14px;text-align:center;background:var(--card);box-shadow:-1px 0 var(--line);vertical-align:middle}
+.dispatcher-shell .table-wrap th.table-actions-cell{z-index:4;background:var(--surface-soft)}
+.dispatcher-shell .table-wrap tr:hover .table-actions-cell{background:var(--surface-hover)}
+.dispatcher-shell .table-actions-cell .fleet-row-actions{display:inline-flex;align-items:center;justify-content:center;gap:12px;min-width:0;flex-wrap:nowrap;border:0;border-radius:0;background:none;overflow:visible}
+.dispatcher-shell .fleet-row-actions .fleet-text-action{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:6px 4px;border:0;border-radius:0;background:none;box-shadow:none;color:var(--ink-2);font:500 14px var(--font);cursor:pointer;white-space:nowrap;text-underline-offset:4px}
+.dispatcher-shell .fleet-row-actions .fleet-text-action:hover{color:var(--ink);text-decoration:underline}
+.dispatcher-shell .fleet-row-actions .fleet-text-action:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.dispatcher-shell .fleet-row-actions .fleet-text-action:disabled{opacity:.5;cursor:not-allowed}
+
+.dispatcher-shell .order-row-actions{display:flex;flex-direction:column;align-items:stretch;justify-content:center;gap:6px;margin:0;min-width:128px}
+.dispatcher-shell .order-row-actions .btn{min-height:38px;padding:8px 10px;gap:7px;font-size:13px;white-space:normal;justify-content:center;border-color:transparent;background:transparent;color:var(--ink-2);box-shadow:none}
+.dispatcher-shell .order-row-actions .btn:hover{background:var(--surface-soft);border-color:var(--line);color:var(--ink)}
+@media(max-width:600px){.dispatcher-shell .table-wrap .table-actions-cell{min-width:144px;padding-inline:8px}.dispatcher-shell .fleet-row-actions .fleet-text-action{min-height:44px;min-width:44px}.dispatcher-shell .order-row-actions .btn{min-height:44px}}

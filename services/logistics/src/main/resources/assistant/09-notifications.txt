@@ -1,0 +1,6 @@
+# Thông báo, đồng bộ khách và chi tiết tiến độ
+/notifications
+Đơn mới, phân công, thay đổi chuyến, lấy/giao/về kho và thất bại có sự kiện/thông báo theo nghiệp vụ. Điều phối nhận thông báo hoạt động; tài xế chỉ nhận chuyến liên quan; khách chỉ nhận sự kiện của đơn mình.
+Logistics lưu nghiệp vụ và sự kiện cùng transaction. Customer worker đồng bộ có retry/chống trùng, thông thường vài giây. Mất mạng hoặc lỗi dịch vụ có thể chậm hơn; không khẳng định đã tới thiết bị nếu chỉ mới tạo sự kiện. Thông báo hiện tại là trong GK, không mặc định là SMS/email/push khi đã đóng app.
+Mở Đơn hàng → chi tiết để xem tài xế/biển số, mốc tiến độ, lịch sử và trạng thái thông báo. Các mốc phải thống nhất; chưa có bằng chứng thì không tự sinh giờ hoàn thành. Đơn admin tạo chưa gắn tài khoản khách không tự có người dùng nhận thông báo.
+Chuông ở thanh trên mở danh sách chưa đọc; trang Thông báo cho phép xem toàn bộ theo chức năng hiện hành.

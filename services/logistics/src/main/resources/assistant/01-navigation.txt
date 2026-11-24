@@ -1,0 +1,6 @@
+# Sử dụng GK và tìm chức năng
+/
+GK có ba cổng: điều phối viên quản lý hoạt động, tài xế xử lý chuyến trên điện thoại/tablet, khách hàng tạo và theo dõi đơn.
+Menu admin chia Vận hành (Tổng quan, Đơn hàng, Phân phối đơn hàng, Theo dõi hành trình, Điều phối tự động); Nguồn lực (Kho, Đội xe, Tài xế & ca làm, Chi phí & bảo dưỡng); Tài chính (Tài chính & thống kê, Cước giao hàng); Hệ thống (Thông báo, Cài đặt). Nút Tạo đơn mới ở đầu sidebar.
+Trên màn hình nhỏ, bấm nút mở điều hướng ở thanh trên; Escape hoặc chọn mục để đóng. Bộ lọc kho ở thanh trên giới hạn dữ liệu của các trang có hỗ trợ lọc. Cài đặt cho phép chọn sáng/tối/theo thiết bị và mật độ hiển thị. Chuông mở danh sách thông báo.
+Trợ lý GK tra cứu hướng dẫn và số liệu, không tự thao tác nghiệp vụ. Các câu hỏi chưa có bằng chứng phải được kiểm tra tại trang chức năng; không đoán trạng thái hay giá.

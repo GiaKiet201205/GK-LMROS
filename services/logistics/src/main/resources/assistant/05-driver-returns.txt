@@ -1,0 +1,7 @@
+# App tài xế, giao thất bại và hoàn hàng
+/live
+Tài xế đăng nhập app, xem Hôm nay, Tuyến đường, Lịch tuần và Thêm (Chi phí xe, Thông báo, Tài khoản). Chuyến được phân sẽ xuất hiện và có thông báo. Bấm Bắt đầu đúng ngày/giờ để xuất phát.
+Điểm tiếp theo đã theo thứ tự điều phối tính. Đi tới điểm này mở Google Maps theo đúng địa chỉ khách; Gọi khách gọi số của điểm đó. Xác nhận thanh toán theo thực tế rồi Đã nhận hàng / Đã giao hàng / Đã trả hàng. Không có nút dẫn đường chặng gom trên app tài xế.
+Lấy thất bại: nhập lý do, điều phối liên hệ và hẹn lại trước khi đưa vào hàng chờ. Không cộng vào số lần giao thất bại.
+Giao thất bại lần 1–2 phải đưa hàng về kho rồi mới phân giao lại. Giao thất bại lần 3 hủy giao và chuyển chờ hoàn về người gửi; không tự xóa đơn. Chỉ phân hoàn khi hàng đã về kho. return_pending=chờ hoàn; return_assigned=chờ xuất hoàn; returning=đang hoàn; returned=đã trả người gửi; return_failed=hoàn thất bại. Hoàn thất bại phải về kho rồi điều phối liên hệ và phân lại; không tăng số lần giao thất bại.
+Thao tác ngoại tuyến được giữ trên thiết bị và chỉ được công nhận khi đồng bộ thành công; không báo server đã xử lý nếu còn chờ gửi.

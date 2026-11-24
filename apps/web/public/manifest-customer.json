@@ -1,0 +1,10 @@
+{
+  "name": "GK · Gửi gọn. Giao đúng.",
+  "short_name": "GK Giao hàng",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f8faf7",
+  "theme_color": "#123e35",
+  "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}

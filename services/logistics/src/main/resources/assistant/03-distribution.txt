@@ -1,0 +1,7 @@
+# Phân phối lấy, giao, hoàn và tối ưu tuyến
+/distribution
+Phân phối đơn hàng có ba tab Lấy hàng / Giao hàng / Hoàn hàng. Chọn ngày, kho, tối đa đơn/chuyến (không quá 45), chọn xe và tài xế đủ lịch → Xem phương án → kiểm tra đơn chưa xếp cùng lý do → Phân công & giữ chỗ.
+Xem phương án chỉ là bản nháp, chưa giữ xe/tài xế và chưa giảm hàng chờ. Khi duyệt mới giữ chỗ, chuyển sang chờ xuất phát, gửi thông báo cho tài xế và trừ đơn khỏi hàng chờ. Tài xế bấm Bắt đầu mới sang đang hoạt động.
+Ưu tiên gom ít chuyến: ví dụ 20 đơn vừa số lượng, tải kg, thể tích, thời gian và nguồn lực thì lấy/giao cùng chuyến. Chỉ chia khi ràng buộc bắt buộc. Sau đó tối ưu thứ tự và chi phí km xe + chi phí cố định/chuyến, gồm đường về kho. Thuật toán heuristic không bảo đảm tối ưu toàn cục. Cước khách và chi phí xe là hai khái niệm riêng.
+Giới hạn: 45 đơn/chuyến không tính điểm về kho; không vượt tải và thể tích xe; xe/tài xế cùng kho, rảnh theo ngày, có lịch làm, không bảo dưỡng/giữ bận/trùng chuyến; đúng cửa sổ hẹn và ca 08:00–20:00. Phải hẹn lại đơn quá hạn trước khi phân, không tự nới hạn. Bản nháp cũ sau đổi dữ liệu cần tính lại.
+Không xếp được chuyến thì mở lý do từng đơn: lịch quá hạn, không đủ ca, thiếu tài xế/xe, vượt tải/thể tích, hàng chưa về kho hoặc sai loại chuyến. Số hàng chờ có thể gồm đơn cũ quá hạn, không đồng nghĩa tất cả đủ điều kiện chạy ngay. Theo dõi hành trình lọc lấy/giao/hoàn và xem thứ tự điểm còn lại. Điều phối tự động chỉ chèn đơn lấy mới đủ điều kiện vào phần tuyến còn lại; không sửa điểm đã hoàn thành hoặc đang đi tới.

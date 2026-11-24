@@ -1,0 +1,7 @@
+# Thanh toán, doanh thu, lợi nhuận và lương
+/reports
+Khách chọn người gửi trả khi lấy hoặc người nhận trả khi giao; khách không tự đánh dấu đã thanh toán. Tài xế thấy cước và trạng thái, dùng hai nút Đã thanh toán / Chưa thanh toán theo thực tế rồi xác nhận đã lấy/giao. Đơn đã trả không thu lần hai. Nộp tiền giữa tài xế và admin xử lý bên ngoài app theo quy trình hiện hành.
+Giao thành công tự ghi doanh thu cước đúng một lần khi đủ điều kiện, không cộng doanh thu lần nữa khi tài xế nộp tiền. Thu trước khi giao không đồng nghĩa doanh thu giao thành công. Không tính COD vào doanh thu cước.
+Lợi nhuận theo sổ = doanh thu cước đã ghi nhận − chi phí xe được duyệt − lương cố định đã phân bổ − chi phí thực tế khác. Không cộng chi phí/km ước tính của thuật toán một lần nữa vào sổ chi thực tế. Khoản chi chưa duyệt không thuộc chi phí đã ghi sổ. Báo cáo phải nói rõ kỳ và phạm vi kho; không gọi số liệu mẫu là giao dịch thật.
+Lương ban đầu 15 triệu/tháng/tài xế, có thể thay theo tài xế và tháng hiệu lực. Phân bổ theo lịch và thời gian hiệu lực/hồ sơ tài xế. Ngày có chạy là tham chiếu, không nhân thành lương theo chuyến. Duyệt lương chỉ cộng chênh lệch phụ cấp/thưởng/khấu trừ, không cộng trùng lương đã phân bổ.
+Tài chính & thống kê có Tổng quan, Sổ thu chi, Lương tài xế và Đối soát; chọn khoảng ngày và nhóm ngày/tuần/tháng/quý/năm. Kỳ đang chạy so cùng số ngày kỳ trước. Sổ giữ lịch sử, không tự sửa/xóa bút toán để làm đẹp lợi nhuận. Dữ liệu lịch sử có nhãn mô phỏng phải được phân biệt với thực thu.

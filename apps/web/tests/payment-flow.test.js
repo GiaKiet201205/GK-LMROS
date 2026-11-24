@@ -1,0 +1,8 @@
+import test from 'node:test'
+import assert from 'node:assert/strict'
+import {needsCollection} from '../src/shared/lib/payments.js'
+test('sender pays at pickup and paid shipment cannot be charged again at delivery',()=>{assert.equal(needsCollection({kind:'pickup',payment_required:true,payment_payer:'sender',payment_status:'unpaid'}),true);assert.equal(needsCollection({kind:'delivery',payment_required:true,payment_payer:'sender',payment_status:'paid'}),false)})
+test('recipient pays only on delivery and failed/refunded shipment is not marked paid',()=>{assert.equal(needsCollection({kind:'pickup',payment_required:true,payment_payer:'recipient',payment_status:'unpaid'}),false);assert.equal(needsCollection({kind:'delivery',payment_required:true,payment_payer:'recipient',payment_status:'unpaid'}),true);assert.equal(needsCollection({kind:'delivery',payment_required:true,payment_status:'refunded'}),true)})
+test('warehouse and return checkpoints never collect another delivery fee',()=>{for(const kind of ['warehouse','return'])assert.equal(needsCollection({kind,payment_required:true,payment_payer:'sender',payment_status:'unpaid'}),false);assert.equal(needsCollection({kind:'delivery',payment_required:true,payment_status:'no_charge'}),false)})
+
+test('explicit unpaid confirmation permits completion without inventing a payment',()=>{assert.equal(needsCollection({kind:'delivery',payment_required:true,payment_status:'unpaid',payment_acknowledged:true}),false);assert.equal(needsCollection({kind:'pickup',payment_payer:'sender',payment_required:true,payment_status:'unpaid',payment_acknowledged:true}),false)})

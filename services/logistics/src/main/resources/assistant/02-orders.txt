@@ -1,0 +1,7 @@
+# Tạo đơn lấy và giao, vòng đời đơn hàng
+/orders
+Tạo đơn mới cần thông tin người gửi và người nhận, số điện thoại hợp lệ, hai địa chỉ có tọa độ đã xác nhận, giờ lấy/giao hợp lệ trong ca, khối lượng/thể tích phù hợp, loại hàng, mô tả hàng hóa và người thanh toán. Tìm địa chỉ rồi xác nhận vị trí trước khi tính cước. Có thể kiểm tra trên Google Maps; GK không nhúng bản đồ.
+Kho gần điểm lấy từ người gửi tiếp quản đơn, xét các kho đang hoạt động. Không chọn kho theo địa chỉ người nhận. Địa chỉ/cân nặng đổi phải tính lại cước.
+Bảy mốc cố định: Tiếp nhận → Phân tài xế lấy → Đã lấy → Bàn giao tại kho → Phân xe giao → Xuất kho đang giao → Giao thành công. Mốc chưa tới chưa có thời gian hoàn thành. Lấy và giao là các chuyến riêng, hàng phải về kho trước khi giao.
+Trạng thái DB: awaiting_pickup=chờ lấy; pickup_assigned=chờ xuất phát lấy; picking_up=đang lấy; picked_up=đã lấy đang về kho; at_warehouse=đã về kho; delivery_assigned=chờ xuất giao; out_for_delivery=đang giao; delivered=đã giao. failed=thất bại cần xử lý theo hàng đang ở đâu.
+Đơn hàng → bấm mã đơn/Xem chi tiết để xem lịch hẹn, tiến độ, lịch sử, tài xế, biển số và thông báo. Bộ lọc Nhóm trạng thái rút gọn; mở Bộ lọc để chọn trạng thái chi tiết. Nút Trễ hạn lọc đơn quá hạn. Chọn các đơn đủ điều kiện → Hẹn lại → nhập giờ lấy/giao mới và lý do → áp dụng một lần. Đơn có chuyến phải xử lý phân công trước; không tự đổi lịch của khách.

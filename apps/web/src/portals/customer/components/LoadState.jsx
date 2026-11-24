@@ -1,0 +1,1 @@
+export default function LoadState({ data, error, reload }) { return error ? <div className="c-alert error" role="alert">{error.message} <button className="c-text-button" onClick={reload}>Thử lại</button></div> : !data ? <p className="c-loading">Đang tải thông tin…</p> : null }

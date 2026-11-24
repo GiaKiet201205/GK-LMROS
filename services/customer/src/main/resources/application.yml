@@ -1,0 +1,17 @@
+server:
+  port: ${SERVER_PORT:8080}
+spring:
+  jackson:
+    deserialization:
+      accept-float-as-int: false
+  application:
+    name: gk-customer-service
+  datasource:
+    url: ${CUSTOMER_DB_URL:jdbc:postgresql://localhost:15435/gk_customer}
+    username: ${CUSTOMER_DB_USER:gk_customer}
+    password: ${CUSTOMER_DB_PASSWORD:gk_customer}
+    hikari:
+      connection-init-sql: "SET TIME ZONE 'Asia/Ho_Chi_Minh'"
+app:
+  logistics-url: ${LOGISTICS_URL:http://localhost:8080}
+  internal-token: ${INTERNAL_SERVICE_TOKEN}

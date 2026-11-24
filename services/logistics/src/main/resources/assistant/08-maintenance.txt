@@ -1,0 +1,5 @@
+# Phiếu nhiên liệu, chi phí xe và bảo dưỡng
+/maintenance
+Tài xế lập phiếu nhiên liệu/chi phí xe: chọn xe, loại chi, ngày, số tiền hoặc số lít/đơn giá theo loại, nội dung và chứng từ cần thiết. Admin xem và duyệt thì mới ghi chi phí. Phiếu đã xử lý chỉ xem, không hủy tại danh sách đã xử lý.
+Luồng sửa xe: tài xế báo cần bảo dưỡng, ghi nội dung/ước tính; xe ngừng nhận chuyến mới. Tài xế xác nhận sửa xong kèm thông tin/phiếu sửa. Admin kiểm tra và duyệt trước khi xe hoạt động trở lại. Tài xế báo xong chưa có nghĩa admin đã duyệt. Phiếu đổ nhiên liệu thông thường không tự chuyển xe sang bảo dưỡng.
+Chi phí xe & bảo dưỡng tập hợp nhiên liệu và sửa chữa, không trừ lặp giữa các loại chứng từ. Dữ liệu đã ghi sổ cần điều chỉnh bằng quy trình có lý do, không chỉnh tùy tiện qua chat.

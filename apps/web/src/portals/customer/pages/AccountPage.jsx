@@ -1,0 +1,5 @@
+import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { useAuth } from '../../../shared/auth/AuthProvider.jsx'
+
+export default function CustomerAccount() { const { user,logout } = useAuth(),nav=useNavigate(),[error,setError]=useState(''),[busy,setBusy]=useState(false);async function signout(){setBusy(true);try{await logout();nav('/')}catch(e){setError(e.message)}finally{setBusy(false)}} return <div className="c-container c-page c-account-page"><div className="c-page-heading"><p className="c-eyebrow">KHÁCH HÀNG GK</p><h1>Tài khoản của tôi</h1></div><section className="c-panel"><div className="c-account-avatar">{user.display_name.trim().split(' ').at(-1)?.charAt(0)}</div><h2>{user.display_name}</h2><p>{user.phone}</p><hr /><Link to="/orders" className="c-btn outline">Xem đơn của tôi</Link><button className="c-btn outline c-account-logout" disabled={busy} onClick={signout}>Đăng xuất</button>{error&&<p className="c-alert error" role="alert">{error}</p>}</section></div> }

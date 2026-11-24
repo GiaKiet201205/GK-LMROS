@@ -1,0 +1,7 @@
+# Lịch tài xế, ca làm và trạng thái xe
+/drivers
+Tài xế đăng ký lịch tuần trên app, ít nhất 6 ngày/tuần; ca cố định 08:00–20:00 giờ Việt Nam. Ngoài ca không bắt đầu chuyến mới; chuyến đang chạy vẫn được xác nhận kết quả/về kho.
+00:00–19:59 ngày xét lịch mặc định là hôm nay; từ 20:00–23:59 xét ngày mai. Qua nửa đêm vẫn là ngày hiện tại mới, không đẩy tiếp một ngày nữa. Xem ngày xét lịch backend thay vì tự lấy giờ máy.
+Xe và tài xế được giữ chỗ ngay sau duyệt phân công. planned=chờ xuất phát; in_progress=đang hoạt động; completed=hoàn tất. Hoàn tất điểm cuối về kho mới giải phóng nguồn lực nếu không còn chuyến giữ chỗ khác. Chưa bắt đầu chuyến không đồng nghĩa xe/tài xế rảnh.
+Chỉ thu hồi chuyến chưa xuất phát và chưa xử lý điểm nào. Sau thu hồi, trả đơn về hàng chờ, giải phóng xe/tài xế và thông báo cho tài xế. Xe bảo dưỡng không nhận chuyến mới.
+Thêm/sửa/xóa kho, xe, tài xế tại trang nguồn lực tương ứng. Xóa là ngừng sử dụng có kiểm tra tham chiếu nghiệp vụ, không xóa lịch sử. Tài xế mới được cấp tài khoản theo luồng thêm hồ sơ; không yêu cầu hay cung cấp mật khẩu qua trợ lý.

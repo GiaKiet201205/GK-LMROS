@@ -1,0 +1,5 @@
+import { api } from '../../../shared/api/client.js'
+export default function DriverNotifications({ feed }) {
+ async function read(body) { try { await api('/api/driver/notifications/read',{method:'POST',body});feed.reload() } catch(e) { feed.onError(e.message) } }
+ return <section className="driver-notifications" aria-label="Thông báo tài xế">{feed.error&&<p className="callout red">{feed.error.message}</p>}{feed.data?.unread>0&&<button className="p-btn ghost" onClick={()=>read({throughId:feed.data.latestId})}>Đánh dấu tất cả đã đọc</button>}{feed.data?.items?.map(n=><article key={n.id} className={`pcard${n.read_at?'':' unread'}`}><h2>{n.title}</h2><p>{n.message}</p><p className="muted">{new Date(n.created_at).toLocaleString('vi-VN')} · {n.read_at?'Đã đọc':'Chưa đọc'}</p>{!n.read_at&&<button className="btn ghost" onClick={()=>read({id:n.id})}>Đã đọc</button>}</article>)}{feed.data?.items?.length===0&&<div className="pcard">Chưa có thông báo. Chuyến được phân và tiến độ xử lý sẽ xuất hiện tại đây.</div>}</section>
+}

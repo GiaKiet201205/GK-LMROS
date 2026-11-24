@@ -1,0 +1,8 @@
+import { useState } from 'react'
+import { api } from '../../../shared/api/client.js'
+import { defaultOrderWindows } from '../../../shared/lib/workday.js'
+export default function OrderReschedule({ order, onSaved }) {
+ const [fields,setFields]=useState(()=>{const w=defaultOrderWindows();return order.stage==='at_warehouse'?{deliveryFrom:w.pickupFrom,deliveryTo:w.pickupTo}:w}),[reason,setReason]=useState(''),[busy,setBusy]=useState(false),[message,setMessage]=useState(null)
+ async function save(e){e.preventDefault();setBusy(true);setMessage(null);try{await api(`/api/orders/${order.id}/reschedule`,{method:'POST',body:{...fields,reason}});setMessage({ok:true,text:'Đã cập nhật lịch hẹn, đồng bộ thông báo và đưa vào tính tuyến lại.'});onSaved()}catch(e){setMessage({ok:false,text:e.message})}finally{setBusy(false)}}
+ return <section className="card" id="reschedule"><h2>Hẹn lại giờ lấy / giao</h2><form className="maintenance-actions" onSubmit={save}>{Object.entries(fields).map(([key,value])=><label className="field" key={key}>{{pickupFrom:'Lấy từ',pickupTo:'Lấy trước',deliveryFrom:'Giao từ',deliveryTo:'Giao trước'}[key]}<input type="datetime-local" required value={value} disabled={busy} onChange={e=>setFields({...fields,[key]:e.target.value})}/></label>)}<label className="field">Lý do hẹn lại<textarea required maxLength={1000} value={reason} disabled={busy} onChange={e=>setReason(e.target.value)}/></label><button className="btn" disabled={busy || !reason.trim()}>Cập nhật lịch hẹn</button>{message&&<p className={`callout ${message.ok?'green':'red'}`} role="status">{message.text}</p>}</form></section>
+}

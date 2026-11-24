@@ -1,0 +1,6 @@
+# Cước giao hàng, trọng lượng và khoảng cách
+/pricing
+Cước khách tính từ điểm lấy người gửi đến điểm giao người nhận, không phải tổng đường xe gom đơn. Google Routes được gọi ở backend khi có key; giao diện hiển thị khoảng cách và cước, không lộ key.
+Km tính cước làm tròn gần nhất: 20,4 km→20 km, 20,5 km→21 km. Giá cuối = max(phí tối thiểu, km đã làm tròn × mức phí theo cân nặng). Phải tra Bảng cước hiện hành trong DB để nêu con số; không dùng mức phí cũ hoặc tự đặt giá. Các mốc cân thông thường đến 5/20/50/100 kg; trên mức hỗ trợ chờ báo giá riêng. Admin chỉnh tại Cước giao hàng. Đơn đã có cước giữ giá đã lưu, không tự tính lại lịch sử khi đổi bảng giá.
+Thiếu Google key thì khoảng cách có thể là ước tính, không khẳng định là km đường bộ Google. Nếu đã có key mà Google lỗi, báo lỗi chứ không âm thầm xác nhận giá ước tính. Cước tạm tính/thiếu cước không được biến thành doanh thu xác nhận.
+Trọng lượng và thể tích phải nằm trong sức chứa xe, tối đa 45 đơn/chuyến. Xe 1000 kg không được vượt 1000 kg dù chưa đủ 45 đơn. Cước thu của khách không phải chi phí vận hành/km của xe.

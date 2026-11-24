@@ -1,0 +1,15 @@
+server:
+  port: ${SERVER_PORT:8080}
+spring:
+  jackson:
+    deserialization:
+      accept-float-as-int: false
+  application:
+    name: gk-auth-service
+  datasource:
+    url: ${AUTH_DB_URL:jdbc:postgresql://localhost:5434/gk_auth}
+    username: ${AUTH_DB_USER:gk_auth}
+    password: ${AUTH_DB_PASSWORD:gk_auth}
+app:
+  logistics-url: ${LOGISTICS_URL:http://localhost:8081}
+  internal-token: ${INTERNAL_SERVICE_TOKEN}

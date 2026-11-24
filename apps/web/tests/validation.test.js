@@ -1,0 +1,11 @@
+import test from 'node:test'
+import assert from 'node:assert/strict'
+import { validPhone,normalizePhone,validName,cleanName,orderErrors } from '../src/shared/lib/validation.js'
+const now=new Date('2026-11-22T10:00:00+07:00')
+const point={confirmed:true,label:'50 Tên Lửa, Bình Tân',lat:10.7,lng:106.6}
+const good=()=>({pickupName:'Nguyễn Minh An',customerName:'Cửa hàng Bánh 123',pickupPhone:'+84 903 000 001',phone:'0903000002',weightKg:50,volumeM3:.05,goodsDescription:'2 thùng tài liệu',goodsType:'documents',pickupFrom:'2026-11-23T08:00',pickupTo:'2026-11-23T12:00',deliveryFrom:'2026-11-23T13:00',deliveryTo:'2026-11-23T20:00'})
+test('phone accepts local/+84 formatted digits, rejects short/non-numeric input',()=>{assert.ok(validPhone('0903000001'));assert.equal(normalizePhone('+84 (903) 000-001'),'0903000001');assert.ok(validPhone('+84 (903) 000-001'));for(const v of ['123','',null,'09030000001','abc0903000'])assert.ok(!validPhone(v))})
+test('names keep Vietnamese accents and business names',()=>{assert.ok(validName('Nguyễn Minh An'));assert.ok(validName('Cửa hàng 123'));assert.ok(!validName('123'));assert.ok(!validName(' '));assert.equal(cleanName('  Nguyễn  Minh An '),'Nguyễn Minh An')})
+test('valid order and required fields match both portals',()=>{assert.deepEqual(orderErrors(good(),point,point,now),{});for(const key of ['phone','pickupPhone','pickupName','customerName','weightKg','goodsDescription','pickupFrom']){const body=good();delete body[key];assert.ok(orderErrors(body,point,point,now)[key],key)}})
+test('weight, volume, description and quote coordinates are bounded',()=>{for(const [key,value] of [['weightKg',0],['weightKg',10001],['volumeM3',0],['volumeM3',101],['goodsDescription','x'.repeat(501)]])assert.ok(orderErrors({...good(),[key]:value},point,point,now)[key]);assert.ok(orderErrors(good(),{...point,confirmed:false},point,now).pickupAddress)})
+test('times respect shift, real dates and ordering',()=>{for(const value of ['2026-02-30T20:00','2026-11-23T21:00','2026-11-23T08:00','2026-11-24T12:00'])assert.ok(orderErrors({...good(),pickupTo:value},point,point,now).pickupTo);assert.ok(orderErrors({...good(),deliveryFrom:'2026-11-22T11:00',deliveryTo:'2026-11-22T20:00'},point,point,now).deliveryTo)})
